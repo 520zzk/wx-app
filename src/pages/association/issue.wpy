@@ -1,0 +1,291 @@
+<style scoped>
+.release{
+    width: 100rpx;
+    height:100rpx;
+    position:fixed;
+    bottom:40rpx;
+    right:40rpx;
+    border-radius:50%;
+    background-color:#fff;
+    box-shadow:2px 2px 4px #000;
+}
+.release image{
+    width: 85%;
+    height:85%;
+    position:absolute;
+    left:50%;
+    top:1%;
+    transform:translateX(-50%);
+    -webkit-transform:translateX(-50%);
+}
+.release .release-text{
+    color:#0081ff;
+    font-size: 22rpx;
+    position:absolute;
+    bottom:4rpx;
+    left:0;
+    right:0;
+    text-align:center;
+}
+.nav{
+    width:100%;
+    height:8vh;
+    overflow: hidden;    
+    text-align: center;
+    /* background: rgb(38, 99, 231); */
+    box-shadow:2px 3px 3px #28075273;
+}
+.nav-ul{
+    width:233%;
+    height:100%;
+    position: relative;
+    transform: translateX(0);
+    display: flex;
+    justify-content:space-around;
+}
+.navbox{
+    width:230rpx;
+    height:95%;
+    padding-top:10rpx;
+    float:left;
+    color:#fff;
+}
+.navbox .navbox-circle{
+    width:50rpx;
+    height:50rpx;
+    line-height:50rpx;
+    margin:10rpx auto;
+    border-radius: 50%;
+    font-size: 24rpx;
+}
+.navbox.active{
+    color:#f1649a;
+    font-weight: bold;
+}
+.navbox.active .navbox-circle{
+    background-color:#fff;
+}
+.scroll-box{
+    width:700%;
+    transform: translateX(0);
+}
+.scroll-box::after{
+    content:"";
+    display:block;
+    clear:both;
+}
+.scroll-item{
+    width:14.28%;
+    float:left;
+}
+.contentbox{
+    width:100%;
+    border-top: 2px solid transparent;
+}
+.box-item{
+    width:90%;
+    margin:20rpx auto;
+    background:rgba(255, 255, 255, 0.5);
+    border-radius:5px;
+    padding:10rpx 10rpx;
+    position:relative;
+}
+.box-item .tag{
+    position:absolute;
+    color:#fff;
+    top:8rpx;
+    left:25rpx;
+    z-index:10;
+    font-size: 24rpx;
+    padding:8rpx 15rpx;
+    box-shadow:2px -2px 4px rgba(0,0,0,0.7);
+    border-radius:6rpx;
+}
+.box-item::after{
+    content:"";
+    display:block;
+    clear:both;
+}
+.item-image{
+    width:160rpx;
+    height:160rpx;
+    float:left;
+    margin:auto 0;
+}
+.item-right{
+    float:left;
+    width:70%;
+    color:#fff;
+    margin-left: 20rpx;
+}
+.item-right .title{
+    height:43rpx;
+    line-height:50rpx;
+    overflow: hidden;
+    margin: 7px 0;
+    text-overflow:ellipsis;
+}
+.item-right text{
+    margin: 5px 0;
+    display: block;
+    font-size:22rpx;
+}
+</style>
+<template>
+    <block>
+        <custom-nav bgColor="text-custom-white" isBack="{{true}}">
+            <view slot="backText">活动时间表</view>
+        </custom-nav>
+        <view class="nav">
+            <view class="nav-ul" animation="{{TopAnimation}}">
+                <repeat for="{{TimeData.date}}" key="item" index="index">
+                    <view class="navbox {{TimeNow==index ? 'active' :''}}"  @tap="clickTop({{index}})">
+                        <view>{{item.date}}</view>
+                        <view class="navbox-circle">{{item.week}}</view>
+                    </view>
+                </repeat>
+            </view>
+        </view>
+        <view 
+            class="scroll-box scroll" 
+            animation="{{cenAnimation}}"
+            style="top:{{toTop+2}}px;"
+            @touchstart="start"
+            @touchend="end">
+            <repeat for="{{TimeData.date}}" key="item" index="index" item="item">
+                <scroll-view
+                    class="scroll-item"
+                    scroll-y="true"
+                    lower-threshold="200"
+                    style="height:100%;"
+                    @scrolltolower="scrollNew">
+                    <view class="contentbox">
+                        <repeat for="{{item.list}}" key="item" index="index" item="itemchild">
+                            <view class="box-item" @tap="goTo">
+                                <view class="bg-custom-orange tag">进行中</view>
+                                <image src="https://www.quyun.online/assets/image/Logo.png" class="item-image"/>
+                                <view class="item-right">
+                                    <view class="title">{{itemchild.title}}</view>
+                                    <text>报名时间：{{itemchild.start}}</text>
+                                    <text>活动时间：{{itemchild.end}}</text>
+                                </view>
+                            </view>
+                        </repeat>
+                    </view>
+                </scroll-view>
+            </repeat>
+        </view>
+        <view class="release" @tap="release">
+            <image src="https://www.quyun.online/assets/image/release.png"></image>
+            <text class="release-text">发布</text>
+        </view>
+        <load></load>
+    </block>
+</template>
+
+<script>
+import wepy from 'wepy';
+import Customnav from "@/components/customnav";
+import TimeData from "@/structure/association/issue.js";
+export default class associationform extends wepy.page {
+    components = {
+       "custom-nav":Customnav,
+    }
+
+    onLoad(){
+        let {customBar}=this.$parent.globalData;
+        this.animation1=wepy.createAnimation({
+            duration: 200,
+            timingFunction: 'linear'
+        });
+
+        this.animation2=wepy.createAnimation({
+            duration: 200,
+            timingFunction: 'linear'
+        })
+        this.query=wepy.createSelectorQuery();
+        this.query.select('.nav').boundingClientRect((res)=>{
+            this.toTop=customBar+res.height;
+            this.$apply();
+        }).exec();
+    }
+
+    data = {
+        TimeData,
+        TimeNow:0,
+        TopAnimation:{},
+        cenAnimation:{},
+        animation1: {},
+        animation2: {},
+        toTop:0,
+        lateX:0,
+        disX:0
+    }
+
+    methods = {
+        clickTop(num){
+            this.TimeNow = num;
+            let numberT = num;
+            if(numberT <= this.TimeData.date.length-2 && 1 <= numberT){
+                this.animation1.translateX(`-${(numberT-1)*14}%`).step();
+                this.TopAnimation=this.animation1.export();
+            }
+
+            this.animation2.translateX(`-${numberT*14.28}%`).step();
+            this.cenAnimation=this.animation2.export();
+        },
+
+        scrollNew(){//滑动到底后的触发
+            console.log('滑动到底触发')
+        },
+
+        goTo(){
+            wepy.navigateTo({
+                url: '/pages/association/detail'
+            });
+        },
+
+        start(e){
+            this.startX=e.changedTouches[0].clientX;
+        },
+
+        end(e){
+            let {startX,TimeNow}=this;
+            let {clientX}=e.changedTouches[0];
+            let scriw=this.$parent.globalData.screenWidth;
+            
+            if(Math.abs(clientX-startX)<30){
+                return;
+            }
+
+            if(clientX-startX<0){
+                TimeNow++;
+            }else{
+                TimeNow--;
+            }
+
+            if(TimeNow<0||TimeNow>this.TimeData.date.length-1){
+                return;
+            }
+
+            this.TimeNow=TimeNow;
+            
+            if(this.TimeNow <= this.TimeData.date.length-2 && 1 <= this.TimeNow){
+                this.animation1.translateX(`-${(this.TimeNow-1)*14}%`).step();
+                this.TopAnimation=this.animation1.export();
+            }
+
+            this.animation2.translateX(`-${this.TimeNow*14.28}%`).step();
+            this.cenAnimation=this.animation2.export();
+        },
+
+        release(){
+            wepy.navigateTo({
+                url : '/pages/association/associationform'
+            })
+        }
+    }
+}
+</script>
+
+

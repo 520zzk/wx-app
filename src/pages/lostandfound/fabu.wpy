@@ -1,0 +1,178 @@
+<style scoped>
+    .container{
+        width:750rpx;
+        height:1180rpx;
+    }
+    .box{
+        width:100%rpx;
+        height:1000rpx;
+        position:relative;
+        left:0rpx;
+        top:0rpx;
+    }
+    .box1{
+        width:100%;
+        height:130rpx;
+        position:relative;
+        top:0rpx;
+        left:0rpx;
+        background-color:white;
+    }
+    .name1{
+        width:100%;
+        height:128rpx;
+        font-size:32rpx;
+        background-color: white;
+        position:absolute;
+        left:0rpx;
+        top:0rpx;
+        border-bottom:3rpx solid #787879;
+    }
+    .box2{
+        width:100%;
+        height:950rpx;
+        position:relative;
+        left:0rpx;
+        top:20rpx;
+    }
+    .xq{
+        width:100%;
+        height:400rpx;
+        position:absolute;
+        left:0rpx;
+        top:0rpx;
+        background-color:white;
+    }
+    .tjtp{
+        width:100%;
+        height:200rpx;
+    }
+    .btn{
+        width:250rpx;
+        height:180rpx;
+        position: absolute;
+        left:-30rpx;
+        top:200rpx;
+        border:none;
+    }
+    .btn image{
+        width:250rpx;
+        height:180rpx;
+    }
+    .text{
+        width:100%;
+        height:150rpx;
+        font-size:30rpx;
+    }
+    .lx{
+        width:100%;
+        height:615rpx;
+        position:absolute;
+        left:0rpx;
+        top:420rpx;
+        background-color:white;
+    }
+    .qq{
+        font-size:32rpx;
+        width:100%;
+        height:100rpx;
+        position:absolute;
+        left:0rpx;
+        top:0rpx;
+       
+        border-bottom:1rpx solid #787879;
+    }
+    .dh{
+        font-size:32rpx;
+        width:100%;
+        height:100rpx;
+        position:absolute;
+        left:0rpx;
+        top:130rpx;
+      
+        border-bottom:1rpx solid #787879;
+    }
+    .dd{
+        font-size:32rpx;
+        width:100%;
+        height:100rpx;
+        position:absolute;
+        left:0rpx;
+        top:260rpx;
+        border-bottom:1rpx solid #787879;
+    }
+    .tj{
+        width:700rpx;
+        height:100rpx;
+        position:absolute;
+        left:25rpx;
+        top:400rpx;
+    }
+    .tj button{
+        width:100%;
+        height:100%;
+        line-height:100rpx;
+        background-color:red;
+        color:white;
+    }
+</style>
+
+<template>
+    <block>
+        <custom-nav isCustom="{{true}}" bgColor="text-custom-white">
+            <view slot="content">发布</view>
+        </custom-nav>
+        <view class="container">
+            <view class="box">
+                <form action="#">
+                    <view class="box1">
+                        <view class="name1">
+                            姓名<input type="text" placeholder="请输入您的姓氏(方便失主，得主称呼您)" style="font-size:34rpx;margin-top:10rpx;"/>
+                        </view>
+                    </view>
+                    <view class="box2">
+                        <view class="xq">
+                            <textarea placeholder="物品详情描述" maxlength="-1" class="text"/>
+                            <view class="tjtp">
+                                <button type="button" class="btn" plain="{{true}}"><image src="https://www.quyun.online/assets/image/lostandfound/tianjia.png"></image></button>
+                            </view>
+                        </view>
+                        <view class="lx">
+                            <view class="qq">
+                            您的QQ<input type="text" placeholder="请输入QQ" style="font-size:34rpx;margin-top:10rpx;"/>
+                            </view>
+                            <view class="dh">
+                                您的手机<input type="text" placeholder="请输入手机号码" style="font-size:34rpx;margin-top:10rpx;"/>
+                            </view>
+                            <view class="dd">
+                                取物地点<input type="text" placeholder="请输入领取地点" style="font-size:34rpx;margin-top:10rpx;"/>
+                            </view>
+                            <view class="tj">
+                                <navigator url="/pages/lostandfound/lostandfound" hover-class="navigator-hover"><button form-type="button">发布</button></navigator>
+                            </view>
+                        </view>
+                    </view>
+                </form>
+            </view>
+        </view>
+    </block>
+</template>
+
+<script>
+import wepy from "wepy";
+import Customnav from "@/components/customnav";
+export default class fabu extends wepy.page{
+    data = {
+    
+    }
+
+    components = {
+        'custom-nav' : Customnav
+    }
+
+    methods = {
+
+    }
+}
+</script>
+

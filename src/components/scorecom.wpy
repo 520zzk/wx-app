@@ -1,0 +1,77 @@
+<style scoped>
+    .score{
+        float:left;
+        padding:0 5px;
+        padding-left: 0;
+    }
+    .score::after{
+        content:"";
+        display:block;
+        clear:both;
+    }
+    .score .score-icon{
+        display:block;
+        float:left;
+        background-position: 0 0;
+        background-size:100% 100%;
+        background-repeat:no-repeat;
+        margin:2px;
+    }
+    .score .imgfalse{
+        background-image:url('https://www.quyun.online/assets/image/scorefalse.png');
+    }
+    .score .imgtrue{
+        background-image:url('https://www.quyun.online/assets/image/scoretrue.png');
+    }
+</style>
+
+<template>
+    <view class="score">
+        <repeat for="{{iconList}}" key="id">
+            <text 
+                class="score-icon {{scoreId>=index?'imgtrue':'imgfalse'}}" 
+                style="width:{{iconSize}};height:{{iconSize}};"
+                data-index="{{index}}" 
+                @tap="switchScore"
+            ></text>
+        </repeat>
+    </view>
+</template>
+
+<script>
+    import wepy from "wepy";
+    export default class Scorecom extends wepy.component{
+        props = {
+            iconList : Array,
+            dynamic : {
+                type : [String,Boolean],
+                default : ''
+            },
+            iconSize : {
+                type : String,
+                default : '30rpx'
+            }
+        }
+
+        data = {
+            scoreId : 0
+        }
+
+        onLoad(){
+            this.scoreId=this.iconList.filter(item=>(item.state)).length-1;
+            this.$apply();
+        }
+
+        methods = {
+            switchScore(e){
+                let {dynamic}=this;
+                if(dynamic){
+                    let {index}=e.currentTarget.dataset;
+
+                    console.log(index);
+                    this.scoreId=index;
+                }
+            }
+        }
+    }
+</script>

@@ -1,0 +1,158 @@
+<style scoped>
+    .container{
+        width:85%;
+        margin:0 auto;
+        height:100%;
+    }
+    .box1{
+        position:relative;
+        left:0rpx;
+        top:20rpx;
+        width:576rpx;
+        height:150rpx;
+        color:#fff;
+    }
+    .title{
+        position:absolute;
+        left:0rpx;
+        top:0rpx;
+        font-size:42rpx;
+        color:#fff;
+    }
+    .me{
+        position:absolute;
+        left:32rpx;
+        top:110rpx;
+        font-size:26rpx;
+        word-spacing:60rpx;
+    }
+    .ranking{
+        position:absolute;
+        left:430rpx;
+        top:100rpx;
+        font-size:36rpx;
+        word-spacing:25rpx;
+    }
+    .box2{
+        position:relative;
+        left:0rpx;
+        top:60rpx;
+        width:100%;
+        height:70%;
+        background-color:rgba(255,255,255,0.3);
+        overflow: hidden;
+        color:#fff;
+    }
+    .h{
+        position:absolute;
+        left:32rpx;
+        top:32rpx;
+        font-size:36rpx;
+        word-spacing:68rpx;
+    }
+    .content{
+        position:absolute;
+        left:32rpx;
+        top:96rpx;
+        width:512rpx;
+        height:820rpx;
+    }
+    .one{
+        position:absolute;
+        left:24rpx;
+        top:0rpx;
+        font-size:26rpx;
+        line-height:70rpx;
+    }
+    .two{
+        position:absolute;
+        left:150rpx;
+        top:0rpx;
+        font-size:26rpx;
+        line-height:70rpx;
+    }
+    .three{
+        position:absolute;
+        left:300rpx;
+        top:0rpx;
+        font-size:26rpx;
+        line-height:70rpx;
+    }
+    .four{
+        position:absolute;
+        left:445rpx;
+        top:0rpx;
+        font-size:26rpx;
+        line-height:70rpx;
+    }
+</style>
+<template>
+    <view style="overflow:hidden;height:100%;">
+        <custom-nav isBack="{{true}}" bgColor="text-custom-white">
+            <view slot="content">播放列表</view>
+        </custom-nav>
+        <view class="container">
+            <view class="box1">
+                <view class="title">已点歌曲</view>
+                <view class="me">出山 王胜男 3:38</view><view class="ranking">排名 1</view>
+            </view>
+             <view class="box2">
+                 <view class="h">顺序 歌曲 歌手</view>
+                 <view style="position:absolute;left:460rpx;top:32rpx;font-size:36rpx;">时长</view>
+                 <view class="content">
+                    <scroll-view scroll-y style="height:100%;">
+                        <view class="one">
+                            <repeat for="{{music}}" key="index">
+                                <view>
+                                    <view>{{index+1}}</view>
+                                </view>
+                            </repeat>
+                        </view>
+                        <view class="two">
+                            <repeat for="{{music}}" key="index">
+                                <view>
+                                    <view>{{item.name}}</view>
+                                </view>
+                            </repeat>
+                        </view>
+                        <view class="three">
+                            <repeat for="{{music}}" key="index">
+                                <view>
+                                    <view>{{item.geshou}}</view>
+                                </view>
+                            </repeat>
+                        </view>
+                        <view class="four">
+                            <repeat for="{{music}}" key="index">
+                                <view>
+                                    <view>{{item.shichang}}</view>
+                                </view>
+                            </repeat>
+                        </view>
+                    </scroll-view>
+                </view>
+            </view>
+        </view>
+    </view>
+</template>
+<script>
+import wepy from "wepy";
+import Customnav from "@/components/customnav";
+import Music from "@/structure/music/music";
+export default class Playlist extends wepy.page{
+    data = {
+        music:[...Music.music]
+    }
+
+    components = {
+        'custom-nav' : Customnav
+    }
+
+    methods = {
+        
+    }
+
+
+}
+</script>
+

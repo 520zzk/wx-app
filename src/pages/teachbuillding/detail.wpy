@@ -1,0 +1,163 @@
+<style scoped>
+  @import "/styles/teachbuillding/detail.wxss";
+</style>
+
+<template>
+  <block>
+    <custom-nav isCustom="{{true}}" bgColor="text-custom-white">
+      <view slot="content">{{title}}</view>
+    </custom-nav>
+    <view class="DrawerPage {{modalName=='viewModal'?'show':''}}" style="top:{{boxTop}}px;">
+      <view
+        class="roomState"
+        data-target="viewModal"
+        @touchstart.stop="start"
+        @touchmove.stop="move">
+        <view class="roomState-Icon">
+          <view>
+            <image src="https://www.quyun.online/assets/image/teachbuillding/fangtrue.png"/>
+            <text>使用中</text>
+          </view>
+          <view>
+            <image src="https://www.quyun.online/assets/image/teachbuillding/fangfalse.png"/>
+            <text>未使用</text>
+          </view>
+        </view>
+        <image src="https://www.quyun.online/assets/image/association/toright.png" class="tipImg"></image>
+        <view class="roomState-model">
+          <view class="text model-title">教室使用率</view>
+          <view class="text model-desc">{{useing}}/{{total}}</view>
+          <view class="circle">
+            <view class="small-circle">
+              <text>{{per}}%</text>
+            </view>
+            <view class="rect left-rect">
+              <view 
+                style="transform:rotate({{rotate.l}}deg);"
+              ></view>
+            </view>
+            <view class="rect right-rect">
+              <view
+                style="transform:rotate({{rotate.r}}deg);"
+                @transitionend="transend"
+              ></view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <scroll-view scroll-y class="scroll" style="top:{{toTop}}px;">
+        <view class="contentBox">
+          <repeat for="{{storeyone}}" key="index">
+            <view class="row">
+              <view class="row-title">{{index+1}}F</view>
+              <scroll-view class="row-list" scroll-x>
+                <repeat for="{{item}}" key="item" item="itemchild" index="rid">
+                  <view class="state">
+                    <image src="https://www.quyun.online/assets/image/teachbuillding/fang{{itemchild}}.png"/>
+                    <text>{{index+1}}{{rid+1>=10?rid+1:'0'+(rid+1)}}</text>
+                  </view>
+                </repeat>
+              </scroll-view>
+            </view>
+          </repeat>
+        </view>
+      </scroll-view>
+    </view>
+    <view class="DrawerClose {{modalName=='viewModal'?'show':''}}" @tap="hideModal"></view>
+    <view class="DrawerWindow {{modalName=='viewModal'?'show':''}}" style="top:{{boxTop}}px;">
+      <view class="cu-list menu card-menu margin-top-xl margin-bottom-xl shadow-lg">
+        <repeat for="{{storeyData}}" key="index">
+          <view class="cu-item arrow" id="{{index}}" @tap="toggle({{item}})">
+            <view class="content">
+              <text class="cuIcon-github text-grey"></text>
+              <text class="text-grey">{{index}}</text>
+            </view>
+          </view>
+        </repeat>
+      </view>
+    </view>
+  </block>  
+</template>
+
+<script>
+import wepy from "wepy";
+import datateach from "@/structure/teachbuillding/teachbuillding.js";
+import Customnav from "@/components/customnav";
+
+export default class Detail extends wepy.page{
+    data = {
+      modalName : null,
+      storeyData:{}, //总楼
+      storeyone:[],  //显示的楼栋
+      title : '',
+      toTop : 0,
+      boxTop : 0,
+      useing : 80,
+      total : 113,
+      per : 0,
+      rotate : {l : 0,r : 0}
+    }
+
+    onLoad(option) {
+      let _this=this;
+      _this.storeyData=datateach.teach[option.id];
+      let keys=Object.keys(_this.storeyData);
+      _this.storeyone=_this.storeyData[keys[0]];
+      _this.title=keys[0];
+
+      _this.per=Math.round(_this.useing/_this.total*100);
+      if(_this.per>50){
+        _this.rotate.r=180;
+      }else{
+        _this.rotate.r=Math.round(_this.per/100*360);
+      }
+
+      let res=wepy.getSystemInfoSync();
+      let query=wepy.createSelectorQuery();
+      let custom=wepy.getMenuButtonBoundingClientRect();
+      query.select('.roomState').boundingClientRect((result)=>{
+        _this.toTop=result.height;
+        _this.boxTop=custom.bottom+custom.top-res.statusBarHeight;
+        _this.$apply();
+      }).exec();
+    }
+
+    methods={
+      hideModal(e) {
+        this.modalName=null;
+      },
+      
+      toggle(obj,$event){  //选择楼栋的
+        let {id}=$event.currentTarget;
+        this.modalName=null;
+        this.storeyone=obj;
+        this.title=id;
+      },
+
+      start(e){
+        let {clientX,clientY}=e.changedTouches[0];
+        this.startPos={
+          x : clientX,
+          y : clientY
+        };
+      },
+
+      move(e){
+        let {clientX,clientY}=e.changedTouches[0];
+        let {x,y}=this.startPos;
+        if(clientX-x>clientY-y&&clientX-x>70){
+          this.modalName=e.currentTarget.dataset.target;
+        }
+      },
+
+      transend(){
+        this.rotate.l=Math.round(this.per/100*360-180);
+      }
+    }
+
+    components = {
+      'custom-nav' : Customnav
+    }
+}
+</script>
+
